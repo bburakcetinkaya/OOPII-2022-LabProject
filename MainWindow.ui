@@ -1,0 +1,504 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1049</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(255, 255, 255);
+</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="1" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>INPUT</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" alignment="Qt::AlignHCenter|Qt::AlignVCenter">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>OUTPUT</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1049</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuExport_As">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>Export As</string>
+     </property>
+     <addaction name="fileAction_exportAsSource"/>
+     <addaction name="fileAction_exportAsOutput"/>
+    </widget>
+    <addaction name="fileAction_openSource"/>
+    <addaction name="fileAction_saveOutput"/>
+    <addaction name="fileAction_saveAsOutput"/>
+    <addaction name="menuExport_As"/>
+    <addaction name="separator"/>
+    <addaction name="fileAction_Exit"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <widget class="QMenu" name="menuClear">
+     <property name="title">
+      <string>Clear</string>
+     </property>
+     <addaction name="editAction_clearSource"/>
+     <addaction name="editAction_clearOutput"/>
+    </widget>
+    <addaction name="menuClear"/>
+    <addaction name="editAction_undoOutput"/>
+    <addaction name="editAction_redoOutput"/>
+   </widget>
+   <widget class="QMenu" name="menuConversion">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Conversion</string>
+    </property>
+    <addaction name="conversionAction_RGBtoGrayscale"/>
+    <addaction name="conversionAction_RGBtoHSV"/>
+   </widget>
+   <widget class="QMenu" name="menuSegmentation">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Segmentation</string>
+    </property>
+    <addaction name="segmentationAction_multiOtsuThresholding"/>
+    <addaction name="segmentationAction_chanVeseSegmentation"/>
+    <addaction name="segmentationAction_morphologicalSnakes"/>
+   </widget>
+   <widget class="QMenu" name="menuEdge_Detection">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="title">
+     <string>Edge Detection</string>
+    </property>
+    <addaction name="edgeDetectionAction_Roberts"/>
+    <addaction name="edgeDetectionAction_Sobel"/>
+    <addaction name="edgeDetectionAction_Scharr"/>
+    <addaction name="edgeDetectionAction_Prewitt"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuConversion"/>
+   <addaction name="menuSegmentation"/>
+   <addaction name="menuEdge_Detection"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="sourceOutputToolbar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>true</bool>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>LeftToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>true</bool>
+   </attribute>
+   <addaction name="fileAction_openSource"/>
+   <addaction name="fileAction_exportAsSource"/>
+   <addaction name="editAction_clearSource"/>
+   <addaction name="separator"/>
+   <addaction name="fileAction_saveOutput"/>
+   <addaction name="fileAction_saveAsOutput"/>
+   <addaction name="fileAction_exportAsOutput"/>
+   <addaction name="editAction_undoOutput"/>
+   <addaction name="editAction_redoOutput"/>
+   <addaction name="editAction_clearOutput"/>
+  </widget>
+  <widget class="QToolBar" name="operationsToolBar">
+   <property name="windowTitle">
+    <string>toolBar_2</string>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>RightToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="conversionAction_RGBtoGrayscale"/>
+   <addaction name="conversionAction_RGBtoHSV"/>
+   <addaction name="separator"/>
+   <addaction name="segmentationAction_multiOtsuThresholding"/>
+   <addaction name="segmentationAction_chanVeseSegmentation"/>
+   <addaction name="segmentationAction_morphologicalSnakes"/>
+   <addaction name="separator"/>
+   <addaction name="edgeDetectionAction_Roberts"/>
+   <addaction name="edgeDetectionAction_Sobel"/>
+   <addaction name="edgeDetectionAction_Scharr"/>
+   <addaction name="edgeDetectionAction_Prewitt"/>
+  </widget>
+  <action name="fileAction_openSource">
+   <property name="icon">
+    <iconset>
+     <normalon>icons/folder-open.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Open Source</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="fileAction_saveOutput">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/save-file.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Save Output</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="fileAction_saveAsOutput">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/save-as.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Save As Output</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="fileAction_exportAsSource">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/export-image.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Source</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="fileAction_exportAsOutput">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/export-image.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Output</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="fileAction_Exit">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/exit.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Exit</string>
+   </property>
+   <property name="shortcut">
+    <string>Shift+F4</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="editAction_undoOutput">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/back-arrow.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Undo Output</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="editAction_redoOutput">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/front-arrow.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Redo Output</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Y</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="editAction_clearSource">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/clean.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Source</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="editAction_clearOutput">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/clean.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Output</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+L</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="conversionAction_RGBtoGrayscale">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/rgb-to-greyscale.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>RGB to Grayscale</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="conversionAction_RGBtoHSV">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/rgb-to-hsv.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>RGB to HSV</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="segmentationAction_multiOtsuThresholding">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/white-one.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Multi-Otsu Thresholding</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="segmentationAction_chanVeseSegmentation">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/white-two.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Chan-Vese Segmentation</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="segmentationAction_morphologicalSnakes">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/white-three.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Morphological Snakes</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="edgeDetectionAction_Roberts">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/one.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Roberts</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="edgeDetectionAction_Sobel">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/two.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Sobel</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="edgeDetectionAction_Scharr">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/three.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Scharr</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="edgeDetectionAction_Prewitt">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normalon>icons/four.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Prewitt</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
