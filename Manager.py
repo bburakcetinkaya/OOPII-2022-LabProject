@@ -4,10 +4,11 @@ Created on Wed May 25 05:06:43 2022
 
 @author: piton
 """
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets
 from MainWindow import Ui_MainWindow
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QLabel, QFileDialog
+from PrintImage import PrintImage
+
+from PyQt5.QtWidgets import QFileDialog,QUndoStack
 from PyQt5.QtGui import QImage
 from Failed import Failed
 from PIL import ImageQt
@@ -19,6 +20,7 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setupUi(self)
+        self.undoStack = QUndoStack()
         self.connectSignalSlots()
         
     
@@ -33,8 +35,8 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         
         self.editAction_clearSource.triggered.connect(self.clearSource)
         self.editAction_clearOutput.triggered.connect(self.clearOutput)
-        self.editAction_undoOutput.triggered.connect(self.undoOutput)
-        self.editAction_redoOutput.triggered.connect(self.redoOutput)
+        self.editAction_undoOutput.triggered.connect(self.undoStack.undo)
+        self.editAction_redoOutput.triggered.connect(self.undoStack.redo)
         
         self.conversionAction_RGBtoGrayscale.triggered.connect(self.RGBtoGrayscale)
         self.conversionAction_RGBtoHSV.triggered.connect(self.RGBtoHSV)
@@ -47,6 +49,9 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         self.edgeDetectionAction_Sobel.triggered.connect(self.Sobel)
         self.edgeDetectionAction_Scharr.triggered.connect(self.Scharr)
         self.edgeDetectionAction_Prewitt.triggered.connect(self.Prewitt)
+        
+        self.undoStack.canUndoChanged.connect(lambda: self.enableUndo(self.undoStack.canUndo()))
+        self.undoStack.canRedoChanged.connect(lambda: self.enableRedo(self.undoStack.canRedo()))
         
     def enableAfterSourceObtained(self):
         self.fileAction_exportAsSource.setEnabled(True)
@@ -96,21 +101,22 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         self.fileAction_saveOutput.setEnabled(True)
         self.fileAction_saveAsOutput.setEnabled(True)
         self.editAction_clearOutput.setEnabled(True)
-        self.editAction_undoOutput.setEnabled(True)
+
         
     def disableAfterOutputCleared(self):
         self.fileAction_exportAsOutput.setEnabled(False)
         self.fileAction_saveOutput.setEnabled(False)
         self.fileAction_saveAsOutput.setEnabled(False)
         self.editAction_clearOutput.setEnabled(False)
-        self.editAction_undoOutput.setEnabled(False)
+
         
 
         
     def loadSourceImage(self):
         self.filePath = QFileDialog.getOpenFileName(filter=("Image Files (*.png *.jpg)"))[0]
-        self.inputLabel.setPixmap(QtGui.QPixmap(self.filePath))
-        
+        pixmap = QtGui.QPixmap(self.filePath)
+        cmd = PrintImage(self.inputLabel,pixmap)
+        self.undoStack.push(cmd)
         import os
         self.splitedPath = os.path.split(str(self.filePath))
         self.splitedFileName = str(self.splitedPath[1]).split(".")
@@ -142,7 +148,7 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         import os
         self.img = ImageQt.fromqpixmap(self.outputLabel.pixmap())   
         extension = str("png") if self.splitedFileName[1] == "jpg" else str("jpg")
-        self.img.save(self.splitedPath[0]+"/"+Output+"."+ extension)
+        self.img.save(self.splitedPath[0]+"/"+self.img+"."+ extension)
         print("export as output")       
         
     def Exit(self):
@@ -170,12 +176,6 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         self.outputLabel.setText("OUTPUT")
         self.disableAfterOutputCleared()
         
-    def undoOutput(self):
-        print("undo output")
-        
-    def redoOutput(self):
-        print("redo output")
-        
     def RGBtoGrayscale(self):
         print("rgb to gray")
         imgPrc = ImageProcessing()
@@ -200,7 +200,10 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.hsv = QImage(self.result.data, self.result.shape[1], self.result.shape[0],
                               self.result.strides[0], QImage.Format_RGB888)
-            self.outputLabel.setPixmap(QtGui.QPixmap(self.hsv))
+            pixmap = QtGui.QPixmap(self.hsv)
+            cmd = PrintImage(self.outputLabel,pixmap)
+            self.undoStack.push(cmd)
+            # self.outputLabel.setPixmap(QtGui.QPixmap(self.hsv))
             
             self.enableAfterOutputObtained()
         
@@ -214,7 +217,9 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             self.multiOtsuThresholding = QImage(self.result.data,  self.result.shape[1], self.result.shape[1], 
                                                 self.result.strides[0], QImage.Format_RGB888)
-            self.outputLabel.setPixmap(QtGui.QPixmap(self.multiOtsuThresholding))
+            pixmap = QtGui.QPixmap(self.multiOtsuThresholding)
+            cmd = PrintImage(self.outputLabel,pixmap)
+            self.undoStack.push(cmd)
             
             self.enableAfterOutputObtained()
         
@@ -228,7 +233,9 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         else:            
             self.cv = QImage(self.result,  self.result.shape[1], self.result.shape[1], 
                                             self.result.strides[0], QImage.Format_Indexed8)
-            self.outputLabel.setPixmap(QtGui.QPixmap(self.cv))
+            pixmap = QtGui.QPixmap(self.cv)
+            cmd = PrintImage(self.outputLabel,pixmap)
+            self.undoStack.push(cmd)
             
             self.enableAfterOutputObtained()
         
@@ -241,9 +248,11 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
             self.errorHandler()
         else:
             print("ok")
-            self.cv = QImage(self.result,  self.result.shape[1], self.result.shape[1], 
+            self.ms = QImage(self.result,  self.result.shape[1], self.result.shape[1], 
                                             self.result.strides[0], QImage.Format_Indexed8)
-            self.outputLabel.setPixmap(QtGui.QPixmap(self.cv))
+            pixmap = QtGui.QPixmap(self.ms)
+            cmd = PrintImage(self.outputLabel,pixmap)
+            self.undoStack.push(cmd)
             
             self.enableAfterOutputObtained()
         
@@ -256,9 +265,11 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
             self.errorHandler()
         else:
             print("ok")
-            self.grayscale = QImage(self.result.data, self.result.shape[1], self.result.shape[0],
+            self.roberts = QImage(self.result.data, self.result.shape[1], self.result.shape[0],
                                     self.result.strides[0], QImage.Format_Indexed8)
-            self.outputLabel.setPixmap(QtGui.QPixmap(self.grayscale))
+            pixmap = QtGui.QPixmap(self.roberts)
+            cmd = PrintImage(self.outputLabel,pixmap)
+            self.undoStack.push(cmd)
             
             self.enableAfterOutputObtained()
         
@@ -271,9 +282,11 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
             self.errorHandler()
         else:
             print("ok")
-            self.grayscale = QImage(self.result.data, self.result.shape[1], self.result.shape[0],
+            self.sobel = QImage(self.result.data, self.result.shape[1], self.result.shape[0],
                                     self.result.strides[0], QImage.Format_Indexed8)
-            self.outputLabel.setPixmap(QtGui.QPixmap(self.grayscale))   
+            pixmap = QtGui.QPixmap(self.sobel)
+            cmd = PrintImage(self.outputLabel,pixmap)
+            self.undoStack.push(cmd)   
             
             self.enableAfterOutputObtained()
         
@@ -286,9 +299,11 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
             self.errorHandler()
         else:
             print("ok")
-            self.grayscale = QImage(self.result.data, self.result.shape[1], self.result.shape[0],
+            self.scharr = QImage(self.result.data, self.result.shape[1], self.result.shape[0],
                                     self.result.strides[0], QImage.Format_Indexed8)
-            self.outputLabel.setPixmap(QtGui.QPixmap(self.grayscale))
+            pixmap = QtGui.QPixmap(self.scharr)
+            cmd = PrintImage(self.outputLabel,pixmap)
+            self.undoStack.push(cmd)   
             
             self.enableAfterOutputObtained()
         
@@ -301,9 +316,11 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
             self.errorHandler()
         else:
             print("ok")
-            self.grayscale = QImage(self.result.data, self.result.shape[1], self.result.shape[0],
+            self.prewitt = QImage(self.result.data, self.result.shape[1], self.result.shape[0],
                                     self.result.strides[0], QImage.Format_Indexed8)
-            self.outputLabel.setPixmap(QtGui.QPixmap(self.grayscale))
+            pixmap = QtGui.QPixmap(self.prewitt)
+            cmd = PrintImage(self.outputLabel,pixmap)
+            self.undoStack.push(cmd) 
             
             self.enableAfterOutputObtained()
         
@@ -313,6 +330,13 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         self.exception = Failed()
         self.exception.setupUi(exception)
         exception.show()     
+        
+    def enableUndo(self,selection):
+        self.editAction_undoOutput.setEnabled(selection)
+    def enableRedo(self,selection):
+        self.editAction_redoOutput.setEnabled(selection)
+        
+        
 
 if __name__ == "__main__":
     import sys
