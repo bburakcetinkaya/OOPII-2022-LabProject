@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>237</width>
+    <width>231</width>
     <height>116</height>
    </rect>
   </property>
@@ -22,9 +22,9 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>30</y>
-     <width>121</width>
+     <x>50</x>
+     <y>20</y>
+     <width>141</width>
      <height>51</height>
     </rect>
    </property>
@@ -33,8 +33,31 @@
      <pointsize>20</pointsize>
     </font>
    </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: &quot;transparent&quot;</string>
+   </property>
    <property name="text">
-    <string>FAILED!</string>
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600; color:#ff0000;&quot;&gt;FAILED!&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>70</y>
+     <width>31</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color: &quot;transparent&quot;</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>icons/exit.png</normaloff>icons/exit.png</iconset>
    </property>
   </widget>
  </widget>

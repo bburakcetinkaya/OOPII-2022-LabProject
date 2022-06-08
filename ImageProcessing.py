@@ -2,7 +2,8 @@
 """
 Created on Wed May 25 06:09:56 2022
 
-@author: piton
+@author: Burak Çetinkaya
+        151220152110
 """
 import numpy as np
 
@@ -17,10 +18,9 @@ from skimage.filters import prewitt
 
 from skimage.segmentation import chan_vese
 from skimage.segmentation import morphological_chan_vese
-from skimage.segmentation import morphological_geodesic_active_contour
-from skimage.segmentation import inverse_gaussian_gradient
 from skimage.segmentation import checkerboard_level_set
 
+# from skimage.segmentation import store_evolution_in
 from skimage import img_as_ubyte,img_as_float
 from skimage.io import imread
 
@@ -92,14 +92,14 @@ class ImageProcessing(object):
         
     def morphologicalSnakes(self,imgPath):
         print("morphological snakes image processing")
-        self.img = np.array(image_as_float(imread(imgPath,as_gray = True)))
+        self.img = np.array(img_as_float(imread(imgPath,as_gray = True)))
         # Initial level set
-        self.init_ls = checkerboard_level_set(image.shape, 6)
+        self.init_ls = checkerboard_level_set(self.img.shape, 6)
         # List with intermediate results for plotting the evolution
         self.evolution = []
         self.callback = store_evolution_in(self.evolution)
         self.ls = morphological_chan_vese(self.image, num_iter=35, init_level_set=self.init_ls,
-                                     smoothing=3, iter_callback=callback)
+                                          smoothing=3, iter_callback=self.callback)
         self.uByteArr = img_as_ubyte(self.ls)
         return self.uByteArr
             
@@ -120,14 +120,14 @@ class ImageProcessing(object):
     def Scharr(self,imgPath):
         print("Scharr image processing")
         self.img = np.array(img_as_float(imread(imgPath,as_gray=True)))
-        self.filteredImg = sobel(self.img)
+        self.filteredImg = scharr(self.img)
         self.result = img_as_ubyte(self.filteredImg)
         return self.result
 
     def Prewitt(self,imgPath):
         print("prewitt image processing")
         self.img = np.array(img_as_float(imread(imgPath,as_gray=True)))
-        self.filteredImg = sobel(self.img)
+        self.filteredImg = prewitt(self.img)
         self.result = img_as_ubyte(self.filteredImg)
         return self.result
 

@@ -2,9 +2,10 @@
 """
 Created on Wed May 25 05:06:43 2022
 
-@author: piton
+@author: Burak Çetinkaya
+        151220152110
 """
-from PyQt5 import QtGui, QtWidgets
+from PyQt5 import QtGui, QtWidgets,QtCore
 from MainWindow import Ui_MainWindow
 from PrintImage import PrintImage
 
@@ -145,7 +146,6 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         print("export as source")
         
     def exportAsOutput(self):
-        import os
         self.img = ImageQt.fromqpixmap(self.outputLabel.pixmap())   
         extension = str("png") if self.splitedFileName[1] == "jpg" else str("jpg")
         self.img.save(self.splitedPath[0]+"/"+self.img+"."+ extension)
@@ -170,7 +170,8 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         self.edgeDetectionAction_Sobel.setEnabled(False)
         self.edgeDetectionAction_Scharr.setEnabled(False)
         self.edgeDetectionAction_Prewitt.setEnabled(False)
-               
+        
+        self.errorHandler()
         
     def clearOutput(self):
         self.outputLabel.setText("OUTPUT")
@@ -329,6 +330,9 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         exception = QtWidgets.QMainWindow()
         self.exception = Failed()
         self.exception.setupUi(exception)
+        self.exception.pushButton.clicked.connect(lambda: exception.close())
+        exception.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint | QtCore.Qt.FramelessWindowHint)
+        exception.setAttribute(QtCore.Qt.WA_TranslucentBackground)
         exception.show()     
         
     def enableUndo(self,selection):
@@ -338,9 +342,3 @@ class Manager(QtWidgets.QMainWindow, Ui_MainWindow):
         
         
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    win = Manager()
-    win.show()
-    sys.exit(app.exec())

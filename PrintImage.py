@@ -1,3 +1,9 @@
+"""
+Created on May  25 23:45:47 2022
+
+@author: Burak Çetinkaya
+        151220152110
+"""
 from PyQt5.QtWidgets import QUndoCommand
 
 class PrintImage(QUndoCommand):
